@@ -2,6 +2,10 @@
 
 Temperature controller for Raspberry Pi powered by Clojure.
 
+## Tests
+
+    lein tests
+
 ## License
 
 Use at your own risk. Do not run in devices in public network!
