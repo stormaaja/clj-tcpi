@@ -4,8 +4,11 @@
 
 (defn read-temperature
   [filepath]
-  (temp/parse-double-temperature
-      (slurp filepath)))
+  (def content (slurp filepath))
+  (if (temp/is-valid? content)
+    (temp/parse-double-temperature
+      content)
+    nil))
 
 (defn -main
   [& args]
