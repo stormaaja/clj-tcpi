@@ -18,5 +18,5 @@
 (defn parse-double-temperature
   [raw]
   (/
-    (bigdec (parse raw))
+    (bigdec (parse-temperature raw))
     1000.0))
