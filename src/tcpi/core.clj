@@ -67,6 +67,8 @@
   (GET "/ws" [] ws-handler)
   (route/not-found "Not Found"))
 
+(defn app [])
+
 (defn -main
   [& args]
   (org.apache.log4j.BasicConfigurator/configure)

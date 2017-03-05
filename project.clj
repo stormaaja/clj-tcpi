@@ -13,7 +13,7 @@
     [http-kit "2.2.0"]
     [org.clojure/data.json "0.2.6"]]
   :plugins [[lein-ring "0.9.7"]]
-  :ring {:handler tcpi.handler/app}
+  :ring {:handler tcpi.core/app}
   :main ^:skip-aot tcpi.core
   :target-path "target/%s"
   :profiles {
