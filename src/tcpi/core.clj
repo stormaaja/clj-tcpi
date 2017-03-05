@@ -73,6 +73,12 @@
   []
   (org.apache.log4j.BasicConfigurator/configure))
 
+(defn handle-state-change
+  [temperature state]
+  (broadcast (json/write-str
+    { :temperature temperature
+      :state state })))
+
 (defn start-app
   []
   (configure)
@@ -86,10 +92,7 @@
       "/tmp/sensor"
       0.0
       (:pin config)
-      (fn [temperature state]
-        (broadcast (json/write-str
-          { :temperature temperature
-            :state state }))))))
+      (handle-state-change))))
 
 (defn -main
   [& args]
