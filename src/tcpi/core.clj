@@ -39,6 +39,7 @@
     (println "Missing argumenst: sensor target pin")))
 
 (defonce channels (atom #{}))
+(defonce target (atom 0.0))
 
 (defn broadcast [message]
   (do
@@ -54,7 +55,9 @@
   (swap! channels conj channel))
 
 (defn on-channel-receive
-  [channel data])
+  [channel data]
+  (let [data-json (json/read-str data :key-fn keyword)]
+    (reset! target (:target data))))
 
 (defn ws-handler [req]
   (with-channel req channel
@@ -86,6 +89,14 @@
     (slurp config-file)
     :key-fn keyword))
 
+(start-thermostat
+  [config]
+  (thermo/start-keep-heat
+    (:sensor config)
+    @target
+    (:pin config)
+    handle-state-change))
+
 (defn start-app
   []
   (configure)
@@ -95,11 +106,7 @@
       (logger/wrap-with-logger (reload/wrap-reload #'app-routes))
         {:port (:port config)})
     (println "Starting thermostat")
-    (thermo/start-keep-heat
-      (:sensor config)
-      0.0
-      (:pin config)
-      handle-state-change)))
+    (start-thermostat config)))
 
 (defn get-config-file
   [args]
