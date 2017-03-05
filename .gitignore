@@ -13,3 +13,4 @@ pom.xml
 pom.xml.asc
 *jar
 /lib/
+config.json
