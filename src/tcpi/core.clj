@@ -69,9 +69,13 @@
 
 (defn app [])
 
-(defn -main
-  [& args]
-  (org.apache.log4j.BasicConfigurator/configure)
+(defn configure
+  []
+  (org.apache.log4j.BasicConfigurator/configure))
+
+(defn start-app
+  []
+  (configure)
   (println "Starting server")
   (run-server
     (logger/wrap-with-logger (reload/wrap-reload #'app-routes))
@@ -85,3 +89,9 @@
       (broadcast (json/write-str
         { :temperature temperature
           :state state })))))
+
+(defn -main
+  [& args]
+  (if (.exists (io/as-file "config.json"))
+    (start-app)
+    (println "Missing configure file")))
