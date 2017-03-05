@@ -39,7 +39,6 @@
     (println "Missing argumenst: sensor target pin")))
 
 (defonce channels (atom #{}))
-(defonce target (atom 0.0))
 
 (defn broadcast [message]
   (do
@@ -57,7 +56,7 @@
 (defn on-channel-receive
   [channel data]
   (let [data-json (json/read-str data :key-fn keyword)]
-    (reset! target (:target data))))
+    (thermo/set-target (:target data-json))))
 
 (defn ws-handler [req]
   (with-channel req channel
@@ -93,7 +92,7 @@
   [config]
   (thermo/start-keep-heat
     (:sensor config)
-    @target
+    0.0
     (:pin config)
     handle-state-change))
 
