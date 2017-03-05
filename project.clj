@@ -3,14 +3,18 @@
   :url "https://github.com/stormaaja/clj-tcpi"
   :license {:name "MIT License"
             :url "https://opensource.org/licenses/MIT"}
+  :min-lein-version "2.0.0"
   :dependencies [
-    [org.clojure/clojure "1.8.0"]]
+    [org.clojure/clojure "1.8.0"]
+    [clj-raspberry-gpio "0.1.2"]
+    [compojure "1.5.1"]
+    [ring/ring-defaults "0.2.1"]]
+  :plugins [[lein-ring "0.9.7"]]
+  :ring {:handler tcpi.handler/app}
   :main ^:skip-aot tcpi.core
   :target-path "target/%s"
   :profiles {
     :uberjar {:aot :all}
-    :test {
-      :dependencies [
-        [org.clojure/algo.generic "0.1.2"]]
-    }
-  })
+    :test { :dependencies [[org.clojure/algo.generic "0.1.2"]]}
+    :dev {:dependencies [[javax.servlet/servlet-api "2.5"]
+                          [ring/ring-mock "0.3.0"]]}})
