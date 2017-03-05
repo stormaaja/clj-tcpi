@@ -89,7 +89,7 @@
       {:port (:port config)})
     (println "Starting thermostat")
     (thermo/start-keep-heat
-      "/tmp/sensor"
+      (:sensor config)
       0.0
       (:pin config)
       (handle-state-change))))
