@@ -4,7 +4,8 @@
             [compojure.route :as route]
             [ring.middleware.logger :as logger]
             [ring.middleware.reload :as reload]
-            [clojure.data.json :as json])
+            [clojure.data.json :as json]
+            [clojure.java.io :as io])
   (:use org.httpkit.server)
   (:gen-class))
 
@@ -79,6 +80,12 @@
     { :temperature temperature
       :state state })))
 
+(defn read-config
+  [config-file]
+  (json/read-str
+    (slurp config-file)
+    :key-fn keyword))
+
 (defn start-app
   []
   (configure)
@@ -98,4 +105,4 @@
   [& args]
   (if (.exists (io/as-file "config.json"))
     (start-app)
-    (println "Missing configure file")))
+    (println "Missing configuration file")))
