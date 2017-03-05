@@ -86,7 +86,7 @@
     (println "Starting server")
     (run-server
       (logger/wrap-with-logger (reload/wrap-reload #'app-routes))
-      {:port (:port config)})
+        {:port (:port config)})
     (println "Starting thermostat")
     (thermo/start-keep-heat
       (:sensor config)
