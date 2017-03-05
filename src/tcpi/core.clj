@@ -99,7 +99,7 @@
       (:sensor config)
       0.0
       (:pin config)
-      (handle-state-change))))
+      handle-state-change)))
 
 (defn -main
   [& args]
