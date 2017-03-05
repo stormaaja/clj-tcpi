@@ -8,6 +8,12 @@
 (def min-heat-time 5.0)
 (def max-heat-ratio 2.4)
 
+(defonce current-target (atom 0.0))
+
+(defn set-target
+  [target]
+  (reset! current-target target))
+
 (defn- heating-ratio
   [temperature]
   (min
@@ -61,7 +67,9 @@
         {target :target sensor :sensor} temperature]
     (gpio/output pin (heating-state heating))
     (keep-temperature
-      (merge temperature {:current (read-temperature sensor) })
+      (merge temperature
+        {:current (read-temperature sensor)
+          :target @current-target})
       (merge state
         {:heating (should-heat? temperature state)
           :time (+ time 1) })
@@ -80,6 +88,7 @@
   [sensor target pin state-changed]
   (add-shutdown-clean pin)
   (gpio/setup pin gpio/out)
+  (set-target target)
   (keep-temperature
     {:current (read-temperature sensor)
       :target target
