@@ -10,7 +10,8 @@ Temperature controller for Raspberry Pi powered by Clojure.
 
 ## Run (dev)
 
-    lein ring server-headless
+- Copy example config file "config.example.json" to "config.json"
+- Run `lein run`
 
 ## Tests
 
