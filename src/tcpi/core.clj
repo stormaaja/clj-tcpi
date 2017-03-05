@@ -76,19 +76,20 @@
 (defn start-app
   []
   (configure)
-  (println "Starting server")
-  (run-server
-    (logger/wrap-with-logger (reload/wrap-reload #'app-routes))
-    {:port 8080})
-  (println "Starting thermostat")
-  (thermo/start-keep-heat
-    "/tmp/sensor"
-    30.0
-    17
-    (fn [temperature state]
-      (broadcast (json/write-str
-        { :temperature temperature
-          :state state })))))
+  (let [config (read-config "config.json")]
+    (println "Starting server")
+    (run-server
+      (logger/wrap-with-logger (reload/wrap-reload #'app-routes))
+      {:port (:port config)})
+    (println "Starting thermostat")
+    (thermo/start-keep-heat
+      "/tmp/sensor"
+      0.0
+      (:pin config)
+      (fn [temperature state]
+        (broadcast (json/write-str
+          { :temperature temperature
+            :state state }))))))
 
 (defn -main
   [& args]
