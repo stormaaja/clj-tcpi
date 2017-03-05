@@ -101,8 +101,15 @@
       (:pin config)
       handle-state-change)))
 
+(defn get-config-file
+  [args]
+  (if (= (count args) 0)
+    "config.json"
+    (first args)))
+
 (defn -main
   [& args]
-  (if (.exists (io/as-file "config.json"))
-    (start-app)
-    (println "Missing configuration file")))
+  (let [config-file (get-config-file args)]
+    (if (.exists (io/as-file config-file))
+      (start-app)
+      (println "Configuration file not found"))))
