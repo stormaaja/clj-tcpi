@@ -8,6 +8,10 @@ Temperature controller for Raspberry Pi powered by Clojure.
 - Sensor DS18B20
 - Some relay
 
+## Run (dev)
+
+    lein ring server-headless
+
 ## Tests
 
     lein tests
