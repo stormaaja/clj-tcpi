@@ -96,6 +96,12 @@
     (:pin config)
     handle-state-change))
 
+(defn start-console-app
+  [config-file]
+  (let [config (read-config config-file)]
+    (println "Starting thermostat")
+    (start-thermostat config)))
+
 (defn start-web-app
   [config-file]
   (configure)
@@ -111,5 +117,7 @@
   [& args]
   (let [config-file (or (first args) "config.json")]
     (if (.exists (io/as-file config-file))
-      (start-web-app config-file)
+      (if (= (second args) "console")
+        (start-console-app config-file)
+        (start-web-app config-file))
       (println "Configuration file not found"))))
