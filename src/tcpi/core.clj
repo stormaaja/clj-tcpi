@@ -56,12 +56,6 @@
   (GET "/ws" [] ws-handler)
   (route/not-found "Not Found"))
 
-(defn app [])
-
-(defn configure
-  []
-  (org.apache.log4j.BasicConfigurator/configure))
-
 (defn handle-state-change
   [temperature state]
   (broadcast (json/write-str
@@ -82,7 +76,7 @@
 
 (defn start-web-app
   [config-file]
-  (configure)
+  (org.apache.log4j.BasicConfigurator/configure)
   (let [config (read-config config-file)]
     (println "Starting server")
     (run-server
