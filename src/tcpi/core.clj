@@ -96,7 +96,7 @@
     (:pin config)
     handle-state-change))
 
-(defn start-app
+(defn start-web-app
   [config-file]
   (configure)
   (let [config (read-config config-file)]
@@ -111,5 +111,5 @@
   [& args]
   (let [config-file (or (first args) "config.json")]
     (if (.exists (io/as-file config-file))
-      (start-app config-file)
+      (start-web-app config-file)
       (println "Configuration file not found"))))
