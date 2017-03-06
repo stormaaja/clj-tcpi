@@ -97,9 +97,9 @@
     handle-state-change))
 
 (defn start-app
-  []
+  [config-file]
   (configure)
-  (let [config (read-config "config.json")]
+  (let [config (read-config config-file)]
     (println "Starting server")
     (run-server
       (logger/wrap-with-logger (reload/wrap-reload #'app-routes))
@@ -111,5 +111,5 @@
   [& args]
   (let [config-file (or (first args) "config.json")]
     (if (.exists (io/as-file config-file))
-      (start-app)
+      (start-app config-file)
       (println "Configuration file not found"))))
