@@ -63,8 +63,8 @@
   [temperature state state-changed]
   (state-changed temperature state)
   (Thread/sleep 1000)
-  (let [{heating :heating pin :pin time :time} state
-        {target :target sensor :sensor} temperature]
+  (let [{:keys [heating pin time] state
+        {:keys [target sensor]} temperature]
     (gpio/output pin (heating-state heating))
     (keep-temperature
       (merge temperature
