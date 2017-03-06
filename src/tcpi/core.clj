@@ -69,13 +69,10 @@
     :key-fn keyword))
 
 (defn start-console-app
-  [config-file]
+  [config-file target]
   (let [config (read-config config-file)]
     (println "Starting thermostat")
-    (thermo/start-keep-heat
-      config
-      print-state
-      (Double/parseDouble (nth 3 args)))))
+    (thermo/start-keep-heat config print-state target)))
 
 (defn start-web-app
   [config-file]
@@ -93,6 +90,6 @@
   (let [config-file (or (first args) "config.json")]
     (if (.exists (io/as-file config-file))
       (if (= (second args) "console")
-        (start-console-app config-file)
+        (start-console-app config-file (Double/parseDouble (nth 3 args)))
         (start-web-app config-file))
       (println "Configuration file not found"))))
