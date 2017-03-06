@@ -85,7 +85,7 @@
       (gpio/cleanup 17)))))
 
 (defn start-keep-heat
-  [config state-changed]
+  [config state-changed target]
   (let [{:keys [pin sensor]} config]
     (add-shutdown-clean pin)
     (gpio/setup pin gpio/out)

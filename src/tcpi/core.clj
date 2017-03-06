@@ -72,7 +72,10 @@
   [config-file]
   (let [config (read-config config-file)]
     (println "Starting thermostat")
-    (thermo/start-keep-heat config print-state)))
+    (thermo/start-keep-heat
+      config
+      print-state
+      (Double/parseDouble (nth 3 args)))))
 
 (defn start-web-app
   [config-file]
@@ -83,7 +86,7 @@
       (logger/wrap-with-logger (reload/wrap-reload #'app-routes))
         {:port (:port config)})
     (println "Starting thermostat")
-    (thermo/start-keep-heat config handle-state-change)))
+    (thermo/start-keep-heat config handle-state-change 0.0)))
 
 (defn -main
   [& args]
