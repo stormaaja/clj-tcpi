@@ -77,9 +77,7 @@
 (start-thermostat
   [config state-change]
   (thermo/start-keep-heat
-    (:sensor config)
-    0.0
-    (:pin config)
+    config
     state-change))
 
 (defn start-console-app

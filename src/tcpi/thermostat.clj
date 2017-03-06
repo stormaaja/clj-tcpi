@@ -85,13 +85,14 @@
       (gpio/cleanup 17)))))
 
 (defn start-keep-heat
-  [sensor target pin state-changed]
-  (add-shutdown-clean pin)
-  (gpio/setup pin gpio/out)
-  (set-target target)
-  (keep-temperature
-    {:current (read-temperature sensor)
-      :target target
-      :sensor sensor}
-    {:heating false :time 1 :pin pin}
-    state-changed))
+  [config state-changed]
+  (let [{:keys [pin sensor]} config]
+    (add-shutdown-clean pin)
+    (gpio/setup pin gpio/out)
+    (set-target target)
+    (keep-temperature
+      {:current (read-temperature sensor)
+        :target 0.0
+        :sensor sensor}
+      {:heating false :time 1 :pin pin}
+      state-changed)))
