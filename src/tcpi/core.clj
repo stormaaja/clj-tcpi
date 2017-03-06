@@ -107,15 +107,9 @@
     (println "Starting thermostat")
     (start-thermostat config)))
 
-(defn get-config-file
-  [args]
-  (if (= (count args) 0)
-    "config.json"
-    (first args)))
-
 (defn -main
   [& args]
-  (let [config-file (get-config-file args)]
+  (let [config-file (or (first args) "config.json")]
     (if (.exists (io/as-file config-file))
       (start-app)
       (println "Configuration file not found"))))
