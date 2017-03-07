@@ -31,25 +31,25 @@
     (doseq [channel @channels]
       (send! channel message))))
 
-(defn on-channel-close
+(defn on-channel-close!
   [channel status]
   (swap! channels #(remove #{channel} %)))
 
-(defn on-channel-open
+(defn on-channel-open!
   [channel]
   (swap! channels conj channel))
 
 (defn on-channel-receive
   [channel data]
   (let [data-json (json/read-str data :key-fn keyword)]
-    (thermo/set-target (:target data-json))))
+    (thermo/set-target! (:target data-json))))
 
 (defn ws-handler [req]
   (with-channel req channel
-    (on-close channel (partial on-channel-close channel))
+    (on-close channel (partial on-channel-close! channel))
     (if (websocket? channel)
       (on-channel-open channel))
-    (on-receive channel (partial on-channel-receive channel))))
+    (on-receive channel (partial on-channel-receive! channel))))
 
 (defroutes app-routes
   (route/resources "/")

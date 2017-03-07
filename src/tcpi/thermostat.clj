@@ -10,7 +10,7 @@
 
 (defonce current-target (atom 0.0))
 
-(defn set-target
+(defn set-target!
   [target]
   (reset! current-target target))
 
