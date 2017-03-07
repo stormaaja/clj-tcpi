@@ -89,7 +89,7 @@
   (let [{:keys [pin sensor]} config]
     (add-shutdown-clean pin)
     (gpio/setup pin gpio/out)
-    (set-target target)
+    (set-target! target)
     (keep-temperature
       {:current (read-temperature sensor)
         :target 0.0

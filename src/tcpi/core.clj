@@ -48,8 +48,8 @@
   (with-channel req channel
     (on-close channel (partial on-channel-close! channel))
     (if (websocket? channel)
-      (on-channel-open channel))
-    (on-receive channel (partial on-channel-receive! channel))))
+      (on-channel-open! channel))
+    (on-receive channel (partial on-channel-receive channel))))
 
 (defroutes app-routes
   (route/resources "/")
