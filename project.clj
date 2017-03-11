@@ -1,4 +1,4 @@
-(defproject tcpi "0.1.0-SNAPSHOT"
+(defproject tcpi "0.1.1"
   :description "Temperature controller for Raspberry Pi powered by Clojure"
   :url "https://github.com/stormaaja/clj-tcpi"
   :license {:name "MIT License"
