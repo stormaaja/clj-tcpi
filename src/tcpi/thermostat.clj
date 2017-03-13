@@ -7,6 +7,7 @@
 (def max-heat-time 30.0)
 (def min-heat-time 5.0)
 (def max-heat-ratio 2.4)
+(def initial-time (System/currentTimeMillis))
 
 (defonce current-target (atom 0.0))
 
@@ -15,12 +16,9 @@
   (reset! current-target target))
 
 (defn- heating-ratio
-  [temperature]
+  [temperature target]
   (min
-    (/
-      (- (:target temperature)
-        (:current temperature))
-      max-heat-ratio)
+    (/ (- target temperature) max-heat-ratio)
     1.0))
 
 (defn read-temperature
@@ -36,22 +34,20 @@
   (mod time heat-cycle))
 
 (defn- is-temp-for-heating?
-  [temperature cycle-state]
+  [temperature target cycle-state]
   (and
-      (<
-        (:current temperature)
-        (:target temperature))
-      (<
-        cycle-state
-        (* max-heat-time (heating-ratio temperature)))))
+      (< temperature target)
+      (< cycle-state (* max-heat-time (heating-ratio temperature target)))))
 
 (defn- should-heat?
-  [temperature state]
+  [temperature target time-elapsed]
   (and
     (is-temp-for-heating?
       temperature
-      (heating-cycle-state (:time state)))
-    (> (* max-heat-time (heating-ratio temperature)) min-heat-time)))
+      target
+      (heating-cycle-state time-elapsed))
+    (> (* max-heat-time (heating-ratio temperature target)) min-heat-time)))
+
 
 (defn- heating-state
   [heating]
@@ -59,25 +55,25 @@
     gpio/high
     gpio/low))
 
-(defn- keep-temperature
-  [temperature state state-changed]
-  (state-changed temperature state)
-  (let [time-delta (- (System/currentTimeMillis) (:time-elapsed state))]
-    (if (< time-delta 1000)
-      (Thread/sleep (- 1000 time-delta))))
+(defn- time-elapsed-since-start
+  []
+  (- (System/currentTimeMillis) initial-time))
 
-  (let [{:keys [heating pin time]} state
-        {:keys [target sensor]} temperature]
-    (gpio/output pin (heating-state heating))
-    (keep-temperature
-      (merge temperature
-        {:current (read-temperature sensor)
-          :target @current-target})
-      (merge state
-        {:heating (should-heat? temperature state)
-          :time (+ time 1)
-          :time-elapsed (System/currentTimeMillis)})
-      state-changed)))
+(defn- keep-temperature
+  [sensor pin target state-changed]
+  (let [time-elapsed (time-elapsed-since-start)]
+    (let [current-temperature (read-temperature sensor)
+          heating (should-heat? current-temperature target (/ time-elapsed 1000))]
+      (gpio/output
+        pin
+        (heating-state heating))
+      (state-changed { :temperature current-temperature
+        :time-elapsed time-elapsed
+        :target target
+        :heating heating }))
+    (let [time-delta (- (time-elapsed-since-start) time-elapsed)]
+      (if (< time-delta 1000)
+        (Thread/sleep (- 1000 time-delta))))))
 
 (defn- add-shutdown-clean
   [pin]
@@ -94,12 +90,5 @@
     (add-shutdown-clean pin)
     (gpio/setup pin gpio/out)
     (set-target! target)
-    (keep-temperature
-      {:current (read-temperature sensor)
-        :target 0.0
-        :sensor sensor}
-      {:heating false
-        :time 1
-        :pin pin
-        :time-elapsed (System/currentTimeMillis)}
-      state-changed)))
+    (while true
+      (keep-temperature sensor pin @current-target state-changed))))
