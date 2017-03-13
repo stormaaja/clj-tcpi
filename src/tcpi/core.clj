@@ -57,10 +57,8 @@
   (route/not-found "Not Found"))
 
 (defn handle-state-change
-  [temperature state]
-  (broadcast (json/write-str
-    { :temperature temperature
-      :state state })))
+  [state]
+  (broadcast (json/write-str state)))
 
 (defn read-config
   [config-file]
